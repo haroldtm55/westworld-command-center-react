@@ -9,7 +9,7 @@ import LogPanel from './LogPanel'
 class Headquarters extends React.Component {
 
   render() {
-    const [{hosts, toggle, selectedHostId, handleClick, handleChange, allHostsActivated, activateOrDecomissionAll}] = [this.props]
+    const [{hosts, toggle, selectedHostId, handleClick, handleChange, allHostsActivated, activateOrDecomissionAll, logs}] = [this.props]
     return(
       <Grid celled='internally'>
         <Grid.Column width={8}>
@@ -22,44 +22,12 @@ class Headquarters extends React.Component {
         </Grid.Column>
         <Grid.Column width={3}>
   
-        <LogPanel hosts={hosts} allHostsActivated={allHostsActivated} activateOrDecomissionAll={activateOrDecomissionAll}/>
+        <LogPanel hosts={hosts} allHostsActivated={allHostsActivated} activateOrDecomissionAll={activateOrDecomissionAll} logs={logs}/>
   
         </Grid.Column>
       </Grid>
     ) 
   }
-
-
 }
 
 export default Headquarters;
-
-// function Headquarters({hosts}) {
-//   // Remember, there's many ways to do this. This doesn't have to be a class component. It's up to you.
-//   const [selectedHostIndex, setSelectedHostIndex] = useState(null)
-
-//   const handleClick = (hostIndex) => {
-//     setSelectedHostIndex(hostIndex)
-//   }
-//   // console.log(hosts.length)
-//   return(
-//     <Grid celled='internally'>
-//       <Grid.Column width={8}>
-
-//       <ColdStorage hosts={hosts} handleClick={handleClick}/>
-
-//       </Grid.Column>
-//       <Grid.Column width={5}>
-//         <Details selectedHost={hosts[selectedHostIndex]}/>
-//       </Grid.Column>
-//       <Grid.Column width={3}>
-
-//       <LogPanel />
-
-//       </Grid.Column>
-//     </Grid>
-//   )
-  
-// }
-
-// export default Headquarters;

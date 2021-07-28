@@ -37,7 +37,7 @@
       "active": false,
       "imageUrl": "https://vignette.wikia.nocookie.net/westworld/images/8/82/Akecheta_Kiksuya.jpg/revision/latest?cb=20180607183222",
       "gender": "Male",
-      "area": "lowlands",
+      "area": "high_plains",
       "authorized": false
     },
     {
@@ -57,7 +57,7 @@
       "active": false,
       "imageUrl": "https://vignette.wikia.nocookie.net/westworld/images/b/b2/Angela_Reunion.jpg/revision/latest/scale-to-width-down/310?cb=20180509174920",
       "gender": "Female",
-      "area": "high_plains",
+      "area": "lowlands",
       "authorized": false
     },
     {
@@ -67,7 +67,7 @@
       "active": false,
       "imageUrl": "https://vignette.wikia.nocookie.net/westworld/images/f/f3/Akane.jpg/revision/latest/scale-to-width-down/310?cb=20180520132523",
       "gender": "Female",
-      "area": "lowlands",
+      "area": "under_construction",
       "authorized": false
     },
     {
@@ -77,7 +77,7 @@
       "active": false,
       "imageUrl": "https://vignette.wikia.nocookie.net/westworld/images/c/cb/Lawrence_Reunion.jpg/revision/latest/scale-to-width-down/310?cb=20180613182747",
       "gender": "Male",
-      "area": "pariah",
+      "area": "high_plains",
       "authorized": false
     },
     {
@@ -87,7 +87,7 @@
       "active": false,
       "imageUrl": "https://vignette.wikia.nocookie.net/westworld/images/a/a9/Teddy_Flood_Phase_Space.jpg/revision/latest/scale-to-width-down/310?cb=20180526115338",
       "gender": "Male",
-      "area": "python_pass",
+      "area": "lowlands",
       "authorized": false
     },
     {
@@ -97,7 +97,7 @@
       "active": false,
       "imageUrl": "https://vignette.wikia.nocookie.net/westworld/images/4/44/Clementine_The_Riddle_of_the_Sphinx.jpg/revision/latest?cb=20180516165617",
       "gender": "Female",
-      "area": "lowlands",
+      "area": "under_construction",
       "authorized": false
     },
     {
@@ -107,7 +107,7 @@
       "active": false,
       "imageUrl": "https://vignette.wikia.nocookie.net/westworld/images/7/78/Armistice_Akane_No_Mai.jpg/revision/latest/scale-to-width-down/310?cb=20180517164314",
       "gender": "Female",
-      "area": "high_plains",
+      "area": "lowlands",
       "authorized": false
     },
     {
@@ -147,7 +147,7 @@
       "active": false,
       "imageUrl": "https://vignette.wikia.nocookie.net/westworld/images/6/6b/Musashi_Akane_No_Mai.jpg/revision/latest/scale-to-width-down/310?cb=20180520131337",
       "gender": "Male",
-      "area": "high_plains",
+      "area": "lowlands",
       "authorized": false
     }
   ],

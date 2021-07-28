@@ -68,22 +68,3 @@ function HostList ({hosts, selectedHostId, handleClick, hostsToFilterByArea, are
 }
 
 export default HostList
-
-
-// function HostList ({hosts, handleClick}) {
-//   const [style,setStyle] = useState('host')
-
-//   const handleHostClick = (index) => {
-//     console.log(index)
-//     setStyle('host selected')
-//   }
-
-
-//   return (
-//     <Card.Group itemsPerRow={6}>
-//       {hosts.filter(host => !host.active).map((host,idx)=><Host key={idx} index={idx} host={host} handleClick={handleClick} style={style} handleHostClick={handleHostClick}/>)}
-//     </Card.Group>
-//   )
-// }
-
-// export default HostList

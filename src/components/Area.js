@@ -38,13 +38,6 @@ Area.propTypes = {
 
 export default Area;
 
-// const renderHostsLists = () => {
-//   return <HostList hosts={props.hosts.filter(host => {
-//     console.log(host.firstName,' ',host.active)
-//     return host.active && host.area === props.area.name
-//   })}/>
-// }
-
 
 
 

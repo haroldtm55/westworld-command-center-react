@@ -3,37 +3,44 @@ import './stylesheets/App.css'
 import { Segment } from 'semantic-ui-react';
 import WestworldMap from './components/WestworldMap'
 import Headquarters from './components/Headquarters'
+import { Log } from './services/Log'
 
-
+const FETCH_URL = 'http://localhost:3001/'
 class App extends React.Component {
-
   constructor() {
     super()
     this.state = {
       hosts: [],
       selectedHostId: null,
       areas: [],
-      allHostsActivated: false
+      allHostsActivated: false,
+      logs: []
     }
   }
   componentDidMount() {
-     this.fetchHostsAndHandleHostPerArea()
+     this.fetchHosts()
      this.fetchAreas()
   }
 
-  fetchHostsAndHandleHostPerArea = () => {
-    fetch('http://localhost:4000/hosts')
+  fetchHosts = () => {
+    fetch(FETCH_URL+'hosts')
       .then(resp => resp.json())
       .then(hosts=> {
         this.setState({
           hosts:hosts
-        })
+        },()=>this.defineActivateOrDecomissionAllButton())
       })
       .catch(err => console.log(err))
   }
 
+  defineActivateOrDecomissionAllButton = () => {
+    if (this.state.hosts.find(host => !host.active) === undefined) {
+      this.setState({allHostsActivated: true})
+    } else  this.setState({allHostsActivated: false})
+  }
+
   fetchAreas = () => {
-    fetch('http://localhost:4000/areas')
+    fetch(FETCH_URL+'areas')
       .then(resp => resp.json())
       .then(areas=> {
         this.setState({areas})
@@ -57,11 +64,27 @@ class App extends React.Component {
       },
       body: JSON.stringify(flipHostStatus)
     }
-    fetch(`http://localhost:4000/hosts/${selectedHost.id}`,configObj)
-      .then(this.fetchHostsAndHandleHostPerArea)
+    fetch(FETCH_URL+'hosts/'+selectedHost.id,configObj)
+      .then(this.fetchHosts)
+
+      if (!selectedHost.active) {
+        this.setState(prevState => {
+          return {
+            logs: [Log.warn(`Activated ${selectedHost.firstName}`),...prevState.logs]
+          }
+        })
+      } else {
+        this.setState(prevState => {
+          return {
+            logs: [Log.notify(`Decomissioned ${selectedHost.firstName}`),...prevState.logs]
+          }
+        })
+      }
   }
 
   handleChange = (e, {value}, selectedHost) => {
+    const areaName = e.target.textContent
+    console.log(areaName)
     const newArea = {
       area: value
     }
@@ -72,9 +95,21 @@ class App extends React.Component {
       },
       body: JSON.stringify(newArea)
     }
-    if (this.getLimitOfArea(value) > this.getNumOfHostsOfArea(value)) {
-      fetch(`http://localhost:4000/hosts/${selectedHost.id}`,configObj)
-        .then(this.fetchHostsAndHandleHostPerArea)
+    if (this.getLimitOfArea(value)> this.getNumOfHostsOfArea(value)) {
+      fetch(FETCH_URL+'hosts/'+selectedHost.id,configObj)
+        .then(this.fetchHosts)
+        
+      this.setState(prevState => {
+        return {
+          logs: [Log.notify(`${selectedHost.firstName} set in area ${areaName}`),...prevState.logs]
+        }
+      })
+    } else {
+      this.setState(prevState => {
+        return {
+          logs: [Log.error(`Too many hosts. Cannot add ${selectedHost.firstName} to ${areaName}`),...prevState.logs]
+        }
+      })
     }
   }
 
@@ -87,7 +122,6 @@ class App extends React.Component {
     }, 0)
   }
 
-
   getLimitOfArea = (name) => {
     const area = this.state.areas.find(area => area.name === name)
     return area ? area.limit : 0
@@ -95,8 +129,11 @@ class App extends React.Component {
 
   activateOrDecomissionAll = () => {
         
-    this.state.hosts.forEach(host => {
-      fetch(`http://localhost:4000/hosts/${host.id}`, {
+    // Option 1
+    // save all the promises into an array then use Promise.all
+    // which ensures it only fetch new hosts after all fetches are resolved
+    const allDone = this.state.hosts.map(host => {
+      return fetch(FETCH_URL+'hosts/'+host.id, {
         method: 'PATCH',
         headers: {
           'Content-Type': 'application/json',
@@ -110,8 +147,26 @@ class App extends React.Component {
       return {
         allHostsActivated: !prevState.allHostsActivated
       }
-    })
-    this.fetchHostsAndHandleHostPerArea()
+    }, () => this.setState(prevState => {
+        if (this.state.allHostsActivated) {
+          return {
+            logs: [Log.warn('Activating all hosts'),...prevState.logs]
+          }
+        } else {
+          return {
+            logs: [Log.notify('Decomissioning all hosts'),...prevState.logs]
+          }
+        }
+      }
+    ))
+    Promise.all(allDone)
+      .then(() => {
+        this.fetchHosts()
+      })
+    // Option 2: simply wait for a few seconds then fetch
+    // setTimeout(() => {
+    //   this.fetchHosts()
+    // }, 3000);
   }
 
   render() {
@@ -122,7 +177,6 @@ class App extends React.Component {
           handleClick={this.handleClick} 
           selectedHostId={this.state.selectedHostId}
           areas={this.state.areas}
-          // areaChange={this.state.areaChange}
           />
         <Headquarters 
           hosts={this.state.hosts} 
@@ -131,7 +185,8 @@ class App extends React.Component {
           toggle={this.toggle} 
           handleChange={this.handleChange}
           allHostsActivated={this.state.allHostsActivated}
-          activateOrDecomissionAll={this.activateOrDecomissionAll}/>
+          activateOrDecomissionAll={this.activateOrDecomissionAll}
+          logs={this.state.logs}/>
       </Segment>
     )
   }
