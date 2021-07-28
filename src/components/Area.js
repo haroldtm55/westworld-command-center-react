@@ -1,16 +1,30 @@
 import React from 'react';
 import '../stylesheets/Area.css'
+import HostList from './HostList';
 
-const Area = () => (
 
-  <div className='area' id={/* Pass in the area name here to make sure this is styled correctly */}>
-    <h3 className='labels'>{/* Don't just pass in the name from the data...clean that thing up */}</h3>
+function Area ({area, hosts, handleClick, selectedHostId}) {
+  
+  const labelAreas = () => {
+    switch(area.name) {
+      case "high_plains": return 'High Plains'
+      case "python_pass": return 'Python Pass'
+      case "lowlands": return 'Lowlands'
+      case "under_construction": return 'Under Construction'
+      case "pariah": return 'Pariah'
+      case "badlands": return 'Badlands'
+      default: return 'High Plains'
+    }
+  }
 
-    {/* See Checkpoint 1 item 2 in the Readme for a clue as to what goes here */}
+  const renderHostsLists = () => <HostList hostsToFilterByArea={hosts} area={area} handleClick={handleClick} selectedHostId={selectedHostId}/>
 
-  </div>
-
-)
+  return (
+    <div className='area' id={area.name}>
+      <h3 className='labels'>{labelAreas()}</h3>
+      {renderHostsLists()}
+    </div>)
+}
 
 Area.propTypes = {
   hosts: function(props, propName, componentName){
@@ -23,3 +37,45 @@ Area.propTypes = {
 }
 
 export default Area;
+
+// const renderHostsLists = () => {
+//   return <HostList hosts={props.hosts.filter(host => {
+//     console.log(host.firstName,' ',host.active)
+//     return host.active && host.area === props.area.name
+//   })}/>
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+// const Area = ({area}) => {
+  
+//   const labelAreas = () => {
+//     switch(area.name) {
+//       case "high_plains": return 'High Plains'
+//       case "python_pass": return 'Python Pass'
+//       case "lowlands": return 'Lowlands'
+//       case "under_construction": return 'Under Construction'
+//       case "pariah": return 'Pariah'
+//       case "badlands": return 'Badlands'
+//     }
+//   }
+  
+//   return (
+  
+//   <div className='area' id={area.name}>
+//     <h3 className='labels'>{labelAreas()}</h3>
+
+//     {/* See Checkpoint 1 item 2 in the Readme for a clue as to what goes here */}
+
+//   </div>)
+
+// }

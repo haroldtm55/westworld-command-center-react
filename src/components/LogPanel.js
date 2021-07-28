@@ -2,7 +2,7 @@ import React from 'react'
 import { Segment, Button } from 'semantic-ui-react';
 import { Log } from '../services/Log'
 
-const LogPanel = () => {
+const LogPanel = ({hosts, allHostsActivated, activateOrDecomissionAll}) => {
 
   const dummyLogs = () => {
     // This is just to show you how this should work. But where should the log data actually get stored?
@@ -27,11 +27,12 @@ const LogPanel = () => {
       
       {/* Button below is the Activate All/Decommisssion All button */}
       <Button
+        onClick={activateOrDecomissionAll}
         fluid
-        color={"red"}
-        {/* This isn't always going to be the same color...*/}
-        content={"ACTIVATE ALL"}
-        {/* Should the button always read "ACTIVATE ALL"? When should it read "DECOMMISSION ALL"? */}
+        color={allHostsActivated ? 'green' : 'red'}
+        // {/* This isn't always going to be the same color...*/}
+        content={allHostsActivated ? "DECOMISSION ALL": "ACTIVATE ALL"}
+        // {/* Should the button always read "ACTIVATE ALL"? When should it read "DECOMMISSION ALL"? */}
       />
     </Segment>
   )
