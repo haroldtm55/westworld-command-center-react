@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import './stylesheets/App.css'
 import { Segment } from 'semantic-ui-react';
 import WestworldMap from './components/WestworldMap'
@@ -6,6 +6,159 @@ import Headquarters from './components/Headquarters'
 import { Log } from './services/Log'
 
 const FETCH_URL = 'http://localhost:3001/'
+
+// const App = () => {
+//   const [hosts, setHosts] = useState([])
+//   const [selectedHostId, setSelectedHostId] = useState(null)
+//   const [areas, setAreas] = useState([])
+//   const [allHostsActivated, setAllHostsActivated] = useState(false)
+//   const [logs, setLogs] = useState([])
+  
+//   useEffect(()=> {
+//     fetchHosts()
+//     fetchAreas()
+//   },[])
+
+//   useEffect(()=> {
+//     const defineActivateOrDecomissionAllButton = () => (
+//       hosts.find(host => !host.active) === undefined ? setAllHostsActivated(true) : setAllHostsActivated(false)
+//     )
+//     defineActivateOrDecomissionAllButton()
+//   },[hosts])
+
+//   const fetchHosts = () => {
+//     fetch(FETCH_URL+'hosts')
+//       .then(resp => resp.json())
+//       .then(hosts=> {
+//         setHosts(hosts)
+//       })
+//       .catch(err => console.log(err))
+//   }
+
+//   const fetchAreas = () => {
+//     fetch(FETCH_URL+'areas')
+//       .then(resp => resp.json())
+//       .then(areas=> {
+//         setAreas(areas)
+//       })
+//   }
+
+//   const handleClick = (hostId) => setSelectedHostId(hostId)
+
+//   const toggle = (selectedHost) => {
+//     const flipHostStatus = {
+//       active: !selectedHost.active
+//     }
+//     const configObj = {
+//       method: 'PATCH',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify(flipHostStatus)
+//     }
+//     fetch(FETCH_URL+'hosts/'+selectedHost.id,configObj)
+//       .then(fetchHosts)
+
+//       if (!selectedHost.active) {
+//         setLogs([Log.warn(`Activated ${selectedHost.firstName}`),...logs])
+//       } else {
+//         setLogs([Log.notify(`Decomissioned ${selectedHost.firstName}`),...logs])
+//       }
+//   }
+
+//   const handleChange = (e, {value}, selectedHost) => {
+//     const areaName = e.target.textContent
+//     const newArea = {
+//       area: value
+//     }
+//     const configObj = {
+//       method: 'PATCH',
+//       headers: {
+//         'Content-Type': 'application/json'
+//       },
+//       body: JSON.stringify(newArea)
+//     }
+//     if (getLimitOfArea(value)> getNumOfHostsOfArea(value)) {
+//       fetch(FETCH_URL+'hosts/'+selectedHost.id,configObj)
+//         .then(fetchHosts)
+//       setLogs([Log.notify(`${selectedHost.firstName} set in area ${areaName}`),...logs])  
+//     } else {
+//       setLogs([Log.error(`Too many hosts. Cannot add ${selectedHost.firstName} to ${areaName}`),...logs])
+//     }
+//   }
+
+//   const getNumOfHostsOfArea = (name) => {
+//     return hosts.reduce((acc, cur) => {
+//       if (cur.area === name) {
+//         return acc + 1
+//       }
+//       return acc
+//     }, 0)
+//   }
+
+//   const getLimitOfArea = (name) => {
+//     const area = areas.find(area => area.name === name)
+//     return area ? area.limit : 0
+//   }
+
+//   const activateOrDecomissionAll = () => {
+        
+//     // Option 1
+//     // save all the promises into an array then use Promise.all
+//     // which ensures it only fetch new hosts after all fetches are resolved
+//     const allDone = hosts.map(host => {
+//       return fetch(FETCH_URL+'hosts/'+host.id, {
+//         method: 'PATCH',
+//         headers: {
+//           'Content-Type': 'application/json',
+//         },
+//         body: JSON.stringify({
+//           active: !allHostsActivated
+//         })
+//       })
+//     })
+//     setAllHostsActivated(!allHostsActivated)
+//     console.log(allHostsActivated)
+//     if (!allHostsActivated) {
+//       setLogs([Log.warn('Activating all hosts'),...logs])
+//     } else {
+//       setLogs([Log.notify('Decomissioning all hosts'),...logs])
+//     }
+
+//     Promise.all(allDone)
+//       .then(() => {
+//         fetchHosts()
+//       })
+//     // Option 2: simply wait for a few seconds then fetch
+//     // setTimeout(() => {
+//     //   fetchHosts()
+//     // }, 3000);
+//   }
+  
+//     return (
+//       <Segment id='app'>
+//         <WestworldMap 
+//           hosts={hosts} 
+//           handleClick={handleClick} 
+//           selectedHostId={selectedHostId}
+//           areas={areas}
+//           />
+//         <Headquarters 
+//           hosts={hosts} 
+//           handleClick={handleClick} 
+//           selectedHostId={selectedHostId} 
+//           toggle={toggle} 
+//           handleChange={handleChange}
+//           allHostsActivated={allHostsActivated}
+//           activateOrDecomissionAll={activateOrDecomissionAll}
+//           logs={logs}/>
+//       </Segment>
+//     )
+// }
+
+// export default App;
+
+
 class App extends React.Component {
   constructor() {
     super()
@@ -84,7 +237,6 @@ class App extends React.Component {
 
   handleChange = (e, {value}, selectedHost) => {
     const areaName = e.target.textContent
-    console.log(areaName)
     const newArea = {
       area: value
     }
@@ -147,18 +299,20 @@ class App extends React.Component {
       return {
         allHostsActivated: !prevState.allHostsActivated
       }
-    }, () => this.setState(prevState => {
-        if (this.state.allHostsActivated) {
-          return {
-            logs: [Log.warn('Activating all hosts'),...prevState.logs]
-          }
-        } else {
-          return {
-            logs: [Log.notify('Decomissioning all hosts'),...prevState.logs]
-          }
-        }
-      }
-    ))
+    }
+    // , () => this.setState(prevState => {
+    //     if (this.state.allHostsActivated) {
+    //       return {
+    //         logs: [Log.warn('Activating all hosts'),...prevState.logs]
+    //       }
+    //     } else {
+    //       return {
+    //         logs: [Log.notify('Decomissioning all hosts'),...prevState.logs]
+    //       }
+    //     }
+    //   }
+    // )
+    )
     Promise.all(allDone)
       .then(() => {
         this.fetchHosts()
